@@ -6,9 +6,9 @@ Penta Freight is a responsive, single-page website presenting logistics services
 
 ## Project Preview
 
-<img src="public/project-preview.webp" alt="Penta Freight showcase featuring website screens, responsive layouts, and branding mockups" width="520" />
+<img src="public/project-preview.webp" alt="Penta Freight showcase featuring website screens, responsive layouts, and branding mockups" width="100%" />
 
-The collage combines website interface previews with presentation and branding mockups.
+Website and brand preview.
 
 ## Key Features
 
@@ -20,26 +20,34 @@ The collage combines website interface previews with presentation and branding m
 - Testimonials, awards, a global footprint map, and India/USA office information.
 - Keyboard focus styles, a skip link, and mobile menu focus handling.
 
-## Live Website
+This is a frontend presentation website. It does not implement shipment tracking, quotations, form submission, authentication, APIs, or database storage. Industries, Careers, PentaKÜHL product entries, footer legal/social links, and the seven Read More buttons are intentionally retained as inactive controls.
 
-[https://pentakuhl.vercel.app/](https://pentakuhl.vercel.app/)
+## Live Website & Related Repository
 
-## Technology Stack
+https://pentakuhl.vercel.app/
+
+## Tech Stack
 
 React 19, Vite 8, Tailwind CSS 4, React Icons, ESLint, and Playwright Core.
 
-## Getting Started
+## Prerequisites
 
-Use Node.js **20.19+ (20.x), 22.13+ (22.x), or 24+**, with npm. Run these commands from the repository root:
+Node.js matching `^20.19.0 || >=22.12.0` and npm. Browser checks additionally require a compatible Chromium installation.
 
-```sh
-npm ci
-npm run dev
-```
+## Installation & Setup
 
-Vite normally serves development at `http://localhost:5173`. No environment variables, API credentials, or database setup are required.
+1. Open the repository root.
+2. Install the locked dependencies.
 
-## Available Commands
+   ```sh
+   npm ci
+   ```
+
+3. No environment variables, API credentials, or database setup are required.
+
+## Running Locally
+
+Start development with `npm run dev` and open the URL printed by Vite, normally `http://localhost:5173/`.
 
 | Command | Purpose |
 | --- | --- |
@@ -65,9 +73,3 @@ src/
   main.jsx              React entry point
 tests/                  Browser regression check
 ```
-
-## Current Scope
-
-This is a frontend presentation website. It does not implement shipment tracking, quotations, form submission, authentication, APIs, or database storage. Industries, Careers, PentaKÜHL product entries, footer legal/social links, and the seven Read More buttons are intentionally retained as inactive controls.
-
-The static output in `dist/` can be hosted on a static hosting service. The supplied live deployment uses Vercel.
