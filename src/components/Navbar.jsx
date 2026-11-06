@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { IoChevronDown, IoChevronForward, IoClose } from 'react-icons/io5'
 import { HiMenu } from 'react-icons/hi'
-import { indiaOffices } from '../data/siteContent'
+import Logo from '../assets/logo.png'
+import { indiaOffices, servicesList } from '../data/siteContent'
 
 const servicesLinks = [
   'Air Freight',
@@ -19,14 +20,12 @@ const mumbaiOffice = indiaOffices[0]
 const navLink =
   'text-sm font-bold uppercase tracking-[0.14em] text-neutral-700 transition-colors hover:text-penta-orange'
 
-const contactBtnClass =
-  'inline-flex items-center justify-center rounded-lg border-0 bg-penta-orange px-6 py-2.5 text-sm font-bold tracking-wide text-white no-underline transition-colors hover:bg-[#c94515]'
-
 function MobileNavRow({ children, className = '' }) {
   return <li className={`border-b border-gray-200 ${className}`}>{children}</li>
 }
 
 export default function Navbar() {
+  const dialogRef = useRef(null)
   const [scrolled, setScrolled] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
   const [servicesOpen, setServicesOpen] = useState(false)
@@ -34,14 +33,40 @@ export default function Navbar() {
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 60)
+    const desktop = window.matchMedia('(min-width: 1025px)')
+    const onResize = () => {
+      if (desktop.matches) setMobileOpen(false)
+    }
+    const onPointerDown = (event) => {
+      document.querySelectorAll('[data-desktop-dropdown]').forEach((menu) => {
+        if (!menu.contains(event.target)) menu.open = false
+      })
+    }
+    onScroll()
     window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
+    desktop.addEventListener('change', onResize)
+    document.addEventListener('pointerdown', onPointerDown)
+    return () => {
+      window.removeEventListener('scroll', onScroll)
+      desktop.removeEventListener('change', onResize)
+      document.removeEventListener('pointerdown', onPointerDown)
+    }
   }, [])
 
   useEffect(() => {
-    document.body.style.overflow = mobileOpen ? 'hidden' : ''
+    const dialog = dialogRef.current
+    if (!mobileOpen) {
+      dialog.close()
+      return
+    }
+    // Preserve the original menu layout while containing focus and background interaction.
+    dialog.showModal()
+    dialog.querySelector('[aria-label="Close menu"]').focus()
+    const previousOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
     return () => {
-      document.body.style.overflow = ''
+      document.body.style.overflow = previousOverflow
+      dialog.close()
     }
   }, [mobileOpen])
 
@@ -51,6 +76,41 @@ export default function Navbar() {
     setPentaOpen(false)
   }
 
+  const dropdownEvents = {
+    onMouseEnter: (event) => {
+      event.currentTarget.open = true
+    },
+    onMouseLeave: (event) => {
+      if (!event.currentTarget.contains(document.activeElement)) event.currentTarget.open = false
+    },
+    onBlur: (event) => {
+      if (!event.currentTarget.contains(event.relatedTarget)) event.currentTarget.open = false
+    },
+    onKeyDown: (event) => {
+      if (event.key === 'Escape') {
+        event.currentTarget.open = false
+        event.currentTarget.querySelector('summary').focus()
+      }
+    },
+  }
+
+  const mobileLogo = (
+    <a
+      href="#home"
+      onClick={closeMobile}
+      aria-label="Penta Freight home"
+      className="relative block h-11 w-[166px] shrink-0"
+    >
+      <img
+        src={Logo}
+        alt="Penta Freight"
+        width="56"
+        height="358"
+        className="absolute top-1/2 left-1/2 h-[166px] w-[26px] max-w-none -translate-x-1/2 -translate-y-1/2 rotate-90"
+      />
+    </a>
+  )
+
   return (
     <header
       className={`fixed top-0 right-0 left-0 z-[100] bg-white transition-shadow ${
@@ -59,14 +119,14 @@ export default function Navbar() {
     >
       {/* Bar: mobile/tablet ≤1024px */}
       <div className="mx-auto flex h-[var(--header-height)] max-w-[1400px] items-center justify-between px-5 min-[1025px]:hidden">
-        <a href="#footer" className={contactBtnClass} onClick={closeMobile}>
-          Contact
-        </a>
+        {mobileLogo}
         <button
           type="button"
           className="flex h-10 w-10 items-center justify-center border-0 bg-transparent p-0"
           aria-label="Open menu"
           aria-expanded={mobileOpen}
+          aria-controls="mobile-navigation"
+          aria-haspopup="dialog"
           onClick={() => setMobileOpen(true)}
         >
           <HiMenu className="h-7 w-7 text-neutral-900" />
@@ -83,17 +143,23 @@ export default function Navbar() {
             ABOUT US
           </a>
 
-          <div className="group relative">
-            <a href="#services" className={`${navLink} inline-flex items-center gap-1`}>
+          <details data-desktop-dropdown className="group relative" {...dropdownEvents}>
+            <summary
+              onClick={(event) => {
+                event.preventDefault()
+                event.currentTarget.parentElement.open = true
+              }}
+              className={`${navLink} inline-flex min-h-11 cursor-pointer list-none items-center gap-1 [&::-webkit-details-marker]:hidden`}
+            >
               SERVICES
               <IoChevronDown className="h-2.5 w-2.5" />
-            </a>
-            <div className="pointer-events-none absolute top-full left-1/2 z-[110] min-w-[280px] -translate-x-1/2 pt-7 opacity-0 transition-opacity group-hover:pointer-events-auto group-hover:opacity-100">
+            </summary>
+            <div className="pointer-events-none absolute top-full left-1/2 z-[110] min-w-[280px] -translate-x-1/2 pt-7 opacity-0 transition-opacity group-open:pointer-events-auto group-open:opacity-100">
               <ul className="m-0 list-none rounded-xl border border-gray-100 bg-white p-5 shadow-xl">
                 {servicesLinks.map((item) => (
                   <li key={item}>
                     <a
-                      href="#services"
+                      href={`#${servicesList.find((service) => service.title === item).id}`}
                       className="block py-2 text-[15px] font-normal text-neutral-800 no-underline hover:text-penta-orange"
                     >
                       {item}
@@ -102,23 +168,28 @@ export default function Navbar() {
                 ))}
               </ul>
             </div>
-          </div>
+          </details>
 
-          <div className="group relative">
-            <button
-              type="button"
-              className="inline-flex cursor-pointer items-center border-0 bg-transparent p-0 text-[19px] font-bold"
+          <details data-desktop-dropdown className="group relative" {...dropdownEvents}>
+            <summary
+              onClick={(event) => {
+                event.preventDefault()
+                event.currentTarget.parentElement.open = true
+              }}
+              className="inline-flex min-h-11 cursor-pointer list-none items-center border-0 bg-transparent p-0 text-[19px] font-bold [&::-webkit-details-marker]:hidden"
             >
               <span className="text-neutral-800">Penta</span>
               <span className="text-penta-kuhl">KÜHL</span>
               <IoChevronDown className="ml-1.5 h-3 w-3 text-neutral-800" />
-            </button>
-            <div className="pointer-events-none absolute top-full left-1/2 z-[110] min-w-[220px] -translate-x-1/2 pt-7 opacity-0 transition-opacity group-hover:pointer-events-auto group-hover:opacity-100">
+            </summary>
+            <div className="pointer-events-none absolute top-full left-1/2 z-[110] min-w-[220px] -translate-x-1/2 pt-7 opacity-0 transition-opacity group-open:pointer-events-auto group-open:opacity-100">
               <ul className="m-0 list-none rounded-xl border border-gray-100 bg-white p-6 shadow-xl">
                 {pentaLinks.map((item) => (
                   <li key={item}>
                     <a
-                      href="#services"
+                      href="#"
+                      data-inactive
+                      onClick={(event) => event.preventDefault()}
                       className="block py-2 text-[15px] font-normal text-neutral-800 no-underline hover:text-penta-orange"
                     >
                       {item}
@@ -127,12 +198,12 @@ export default function Navbar() {
                 ))}
               </ul>
             </div>
-          </div>
+          </details>
 
-          <a href="#industries" className={navLink}>
+          <a href="#" data-inactive onClick={(event) => event.preventDefault()} className={navLink}>
             INDUSTRIES
           </a>
-          <a href="#careers" className={navLink}>
+          <a href="#" data-inactive onClick={(event) => event.preventDefault()} className={navLink}>
             CAREERS
           </a>
           <a href="#footer" className={navLink}>
@@ -142,160 +213,174 @@ export default function Navbar() {
       </div>
 
       {/* Full-screen mobile menu */}
-      {mobileOpen && (
-        <div
-          className="fixed inset-0 z-[110] flex flex-col bg-white min-[1025px]:hidden"
-          role="dialog"
-          aria-modal="true"
-          aria-label="Navigation menu"
-        >
-          <div className="flex h-[var(--header-height)] shrink-0 items-center justify-between border-b border-gray-100 px-5">
-            <a href="#footer" className={contactBtnClass} onClick={closeMobile}>
-              Contact
-            </a>
-            <button
-              type="button"
-              className="flex h-10 w-10 items-center justify-center border-0 bg-transparent p-0"
-              aria-label="Close menu"
-              onClick={closeMobile}
-            >
-              <IoClose className="h-8 w-8 text-neutral-900" />
-            </button>
-          </div>
+      <dialog
+        ref={dialogRef}
+        id="mobile-navigation"
+        onCancel={closeMobile}
+        onClose={() => setMobileOpen(false)}
+        onKeyDown={(event) => {
+          if (event.key !== 'Tab') return
+          const items = [...event.currentTarget.querySelectorAll('a[href], button')].filter(
+            (item) => item.checkVisibility(),
+          )
+          if (event.shiftKey && document.activeElement === items[0]) {
+            event.preventDefault()
+            items.at(-1).focus()
+          } else if (!event.shiftKey && document.activeElement === items.at(-1)) {
+            event.preventDefault()
+            items[0].focus()
+          }
+        }}
+        className="fixed inset-0 m-0 h-dvh max-h-none w-full max-w-none border-0 bg-white p-0 text-neutral-900 open:flex open:flex-col"
+        aria-label="Navigation menu"
+      >
+        <div className="flex h-[var(--header-height)] shrink-0 items-center justify-between border-b border-gray-100 px-5">
+          {mobileLogo}
+          <button
+            type="button"
+            className="flex h-10 w-10 items-center justify-center border-0 bg-transparent p-0"
+            aria-label="Close menu"
+            onClick={closeMobile}
+          >
+            <IoClose className="h-8 w-8 text-neutral-900" />
+          </button>
+        </div>
 
-          <nav className="flex-1 overflow-y-auto px-5" aria-label="Mobile">
-            <ul className="m-0 list-none p-0">
-              <MobileNavRow>
-                <a
-                  href="#home"
-                  className="flex py-4 text-sm font-bold tracking-[0.12em] text-penta-orange no-underline uppercase"
-                  onClick={closeMobile}
-                >
-                  HOME
-                </a>
-              </MobileNavRow>
-
-              <MobileNavRow>
-                <a
-                  href="#about"
-                  className="flex py-4 text-sm font-bold tracking-[0.12em] text-neutral-900 no-underline uppercase"
-                  onClick={closeMobile}
-                >
-                  ABOUT US
-                </a>
-              </MobileNavRow>
-
-              <MobileNavRow>
-                <button
-                  type="button"
-                  className="flex w-full cursor-pointer items-center justify-between border-0 bg-transparent py-4 text-sm font-bold tracking-[0.12em] text-neutral-900 uppercase"
-                  aria-expanded={servicesOpen}
-                  onClick={() => setServicesOpen((open) => !open)}
-                >
-                  SERVICES
-                  <IoChevronForward
-                    className={`h-4 w-4 shrink-0 text-neutral-900 transition-transform ${servicesOpen ? 'rotate-90' : ''}`}
-                  />
-                </button>
-                {servicesOpen && (
-                  <ul className="m-0 list-none border-t border-gray-100 pb-3 pl-0">
-                    {servicesLinks.map((item) => (
-                      <li key={item}>
-                        <a
-                          href="#services"
-                          className="block py-2.5 text-sm text-neutral-600 no-underline hover:text-penta-orange"
-                          onClick={closeMobile}
-                        >
-                          {item}
-                        </a>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </MobileNavRow>
-
-              <MobileNavRow>
-                <button
-                  type="button"
-                  className="flex w-full cursor-pointer items-center justify-between border-0 bg-transparent py-4 text-[17px] font-bold"
-                  aria-expanded={pentaOpen}
-                  onClick={() => setPentaOpen((open) => !open)}
-                >
-                  <span>
-                    <span className="text-neutral-500">Penta</span>
-                    <span className="text-penta-kuhl">KÜHL</span>
-                  </span>
-                  <IoChevronForward
-                    className={`h-4 w-4 shrink-0 text-neutral-900 transition-transform ${pentaOpen ? 'rotate-90' : ''}`}
-                  />
-                </button>
-                {pentaOpen && (
-                  <ul className="m-0 list-none border-t border-gray-100 pb-3 pl-0">
-                    {pentaLinks.map((label) => (
-                      <li key={label}>
-                        <a
-                          href="#services"
-                          className="block py-2.5 text-sm text-neutral-600 no-underline hover:text-penta-orange"
-                          onClick={closeMobile}
-                        >
-                          {label}
-                        </a>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </MobileNavRow>
-
-              <MobileNavRow>
-                <a
-                  href="#industries"
-                  className="flex py-4 text-sm font-bold tracking-[0.12em] text-neutral-900 no-underline uppercase"
-                  onClick={closeMobile}
-                >
-                  INDUSTRIES
-                </a>
-              </MobileNavRow>
-
-              <MobileNavRow>
-                <a
-                  href="#careers"
-                  className="flex py-4 text-sm font-bold tracking-[0.12em] text-neutral-900 no-underline uppercase"
-                  onClick={closeMobile}
-                >
-                  CAREERS
-                </a>
-              </MobileNavRow>
-
-              <MobileNavRow className="border-b-0">
-                <a
-                  href="#footer"
-                  className="flex py-4 text-sm font-bold tracking-[0.12em] text-neutral-900 no-underline uppercase"
-                  onClick={closeMobile}
-                >
-                  CONTACT
-                </a>
-              </MobileNavRow>
-            </ul>
-
-            <div className="mt-10 pb-10">
-              <h3 className="m-0 text-base font-bold text-neutral-900">Contact Info</h3>
+        <nav className="flex-1 overflow-y-auto px-5" aria-label="Mobile">
+          <ul className="m-0 list-none p-0">
+            <MobileNavRow>
               <a
-                href={`tel:${mumbaiOffice.phone.replace(/\s/g, '')}`}
-                className="mt-3 block text-sm text-neutral-900 underline"
-              >
-                {mumbaiOffice.phone}
-              </a>
-              <a
-                href="#footer"
-                className="mt-2 block text-sm leading-relaxed text-neutral-900 underline"
+                href="#home"
+                className="flex py-4 text-sm font-bold tracking-[0.12em] text-penta-orange no-underline uppercase"
                 onClick={closeMobile}
               >
-                {mumbaiOffice.address}
+                HOME
               </a>
-            </div>
-          </nav>
-        </div>
-      )}
+            </MobileNavRow>
+
+            <MobileNavRow>
+              <a
+                href="#about"
+                className="flex py-4 text-sm font-bold tracking-[0.12em] text-neutral-900 no-underline uppercase"
+                onClick={closeMobile}
+              >
+                ABOUT US
+              </a>
+            </MobileNavRow>
+
+            <MobileNavRow>
+              <button
+                type="button"
+                className="flex w-full cursor-pointer items-center justify-between border-0 bg-transparent py-4 text-sm font-bold tracking-[0.12em] text-neutral-900 uppercase"
+                aria-expanded={servicesOpen}
+                onClick={() => setServicesOpen((open) => !open)}
+              >
+                SERVICES
+                <IoChevronForward
+                  className={`h-4 w-4 shrink-0 text-neutral-900 transition-transform ${servicesOpen ? 'rotate-90' : ''}`}
+                />
+              </button>
+              {servicesOpen && (
+                <ul className="m-0 list-none border-t border-gray-100 pb-3 pl-0">
+                  {servicesLinks.map((item) => (
+                    <li key={item}>
+                      <a
+                        href={`#${servicesList.find((service) => service.title === item).id}`}
+                        className="block py-2.5 text-sm text-neutral-600 no-underline hover:text-penta-orange"
+                        onClick={closeMobile}
+                      >
+                        {item}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </MobileNavRow>
+
+            <MobileNavRow>
+              <button
+                type="button"
+                className="flex w-full cursor-pointer items-center justify-between border-0 bg-transparent py-4 text-[17px] font-bold"
+                aria-expanded={pentaOpen}
+                onClick={() => setPentaOpen((open) => !open)}
+              >
+                <span>
+                  <span className="text-neutral-500">Penta</span>
+                  <span className="text-penta-kuhl">KÜHL</span>
+                </span>
+                <IoChevronForward
+                  className={`h-4 w-4 shrink-0 text-neutral-900 transition-transform ${pentaOpen ? 'rotate-90' : ''}`}
+                />
+              </button>
+              {pentaOpen && (
+                <ul className="m-0 list-none border-t border-gray-100 pb-3 pl-0">
+                  {pentaLinks.map((label) => (
+                    <li key={label}>
+                      <a
+                        href="#"
+                        data-inactive
+                        className="block py-2.5 text-sm text-neutral-600 no-underline hover:text-penta-orange"
+                        onClick={(event) => event.preventDefault()}
+                      >
+                        {label}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </MobileNavRow>
+
+            <MobileNavRow>
+              <a
+                href="#"
+                data-inactive
+                className="flex py-4 text-sm font-bold tracking-[0.12em] text-neutral-900 no-underline uppercase"
+                onClick={(event) => event.preventDefault()}
+              >
+                INDUSTRIES
+              </a>
+            </MobileNavRow>
+
+            <MobileNavRow>
+              <a
+                href="#"
+                data-inactive
+                className="flex py-4 text-sm font-bold tracking-[0.12em] text-neutral-900 no-underline uppercase"
+                onClick={(event) => event.preventDefault()}
+              >
+                CAREERS
+              </a>
+            </MobileNavRow>
+
+            <MobileNavRow className="border-b-0">
+              <a
+                href="#footer"
+                className="flex py-4 text-sm font-bold tracking-[0.12em] text-neutral-900 no-underline uppercase"
+                onClick={closeMobile}
+              >
+                CONTACT
+              </a>
+            </MobileNavRow>
+          </ul>
+
+          <div className="mt-10 pb-10">
+            <h3 className="m-0 text-base font-bold text-neutral-900">Contact Info</h3>
+            <a
+              href={`tel:${mumbaiOffice.phone.replace(/\s/g, '')}`}
+              className="mt-3 block text-sm text-neutral-900 underline"
+            >
+              {mumbaiOffice.phone}
+            </a>
+            <a
+              href="#footer"
+              className="mt-2 block text-sm leading-relaxed text-neutral-900 underline"
+              onClick={closeMobile}
+            >
+              {mumbaiOffice.address}
+            </a>
+          </div>
+        </nav>
+      </dialog>
     </header>
   )
 }

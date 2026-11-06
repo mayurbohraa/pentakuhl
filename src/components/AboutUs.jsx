@@ -15,16 +15,20 @@ export default function AboutUs() {
 
         <p className="m-0 text-base leading-[1.75] text-neutral-600 md:col-span-2 md:text-lg lg:max-w-3xl">
           Penta Freight provides reliable{' '}
-          <strong className="font-bold text-neutral-800">logistics solutions</strong>, specializing in
-          temperature-sensitive shipments. We ensure safe,{' '}
-          <strong className="font-bold text-neutral-800">on-time delivery</strong> worldwide. Trust us
-          for seamless supply chain management.
+          <strong className="font-bold text-neutral-800">logistics solutions</strong>, specializing
+          in temperature-sensitive shipments. We ensure safe,{' '}
+          <strong className="font-bold text-neutral-800">on-time delivery</strong> worldwide. Trust
+          us for seamless supply chain management.
         </p>
       </div>
 
       {/* Airplane image with white fade from text section above */}
       <div className="relative">
         <img
+          width="1024"
+          height="574"
+          loading="lazy"
+          decoding="async"
           src="/images/about/about-plane.png"
           alt="Airplane flying through clouds at sunset"
           className="block h-56 w-full object-cover object-center sm:h-80 md:h-100 lg:h-140"

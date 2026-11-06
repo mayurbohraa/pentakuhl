@@ -1,7 +1,10 @@
 export const servicesList = [
   {
+    id: 'air-freight',
     title: 'Air Freight',
-    image: '/images/services/air-freight.png',
+    image: '/images/services/air-freight.webp',
+    width: 496,
+    height: 341,
     paragraphs: [
       "We are India's leading air freight forwarder, offering complete import and export logistics. Our volume advantage ensures competitive pricing and guaranteed space.",
       'Our expert route planners optimize transit, carrier selection, and cargo handling. We reduce costs and transit time with on-demand pickup, drop-off, and warehousing.',
@@ -9,53 +12,68 @@ export const servicesList = [
     tags: ['Speed', 'Efficiency', 'Reliability', 'Affordability'],
   },
   {
+    id: 'sea-freight',
     title: 'Sea Freight',
-    image: '/images/services/sea-freight.png',
+    image: '/images/services/sea-freight.webp',
+    width: 499,
+    height: 341,
     paragraphs: [
       'We offer global sea freight services via top shipping lines. Our team understands your products, transit needs, and budget.',
       'With decades of experience, we plan, monitor, and manage shipments, ensuring compliance.',
-      'We provide flexible FCL scheduling and cost-efficient LCL options. On-demand pickup, drop-off, and warehousing help cut costs and transit time.'
+      'We provide flexible FCL scheduling and cost-efficient LCL options. On-demand pickup, drop-off, and warehousing help cut costs and transit time.',
     ],
     tags: ['Flexibility', 'Cost-Effective', 'Scalability', 'Expertise'],
   },
   {
+    id: 'multi-modal-transport',
     title: 'Multi Modal Transport',
-    image: '/images/services/multi-modal.png',
+    image: '/images/services/multi-modal.webp',
+    width: 505,
+    height: 341,
     paragraphs: [
       'Every shipment is unique, so we offer multiple affordable transport options.',
       'Along with air and sea freight, we provide multimodal transport via our global network.',
-      'Our tailored solutions enable real-time cargo tracking. We streamline your supply chain as your single point of contact.'
+      'Our tailored solutions enable real-time cargo tracking. We streamline your supply chain as your single point of contact.',
     ],
     tags: ['Integration', 'Efficiency', 'Flexibility', 'Convenience'],
   },
   {
+    id: 'project-cargo',
     title: 'Project Cargo',
-    image: '/images/services/project-cargo.png',
+    image: '/images/services/project-cargo.webp',
+    width: 469,
+    height: 341,
     paragraphs: [
       'We understand the precise needs of customers and shipping lines, ensuring cargo is stuffed, lashed, and choked to specifications.',
       'We handle logistics, clearance, and oversized or breakbulk cargo with expertise.',
-      'We transport over-dimensional cargo using open tops, flat racks, and flatbeds.'
+      'We transport over-dimensional cargo using open tops, flat racks, and flatbeds.',
     ],
     tags: ['Precision', 'Expertise', 'Oversized', 'Security'],
   },
   {
+    id: 'custom-broking',
     title: 'Custom Broking',
-    image: '/images/services/custom-broking.png',
+    image: '/images/services/custom-broking.webp',
+    width: 448,
+    height: 341,
     paragraphs: [
       'Our licensed customs agents know domestic and international regulations.',
       'With 30+ years of experience, we have strong ties with authorities and handle all clearance challenges.',
-      'We ensure smooth, timely, and transparent cargo clearance. Our experts get your documentation right the first time.'
+      'We ensure smooth, timely, and transparent cargo clearance. Our experts get your documentation right the first time.',
     ],
     tags: ['Accuracy', 'Compliance', 'Speed', 'Expertise'],
   },
   {
+    id: 'warehouse-and-fleet',
     title: 'Transit Warehouse And Fleet',
-    image: '/images/services/warehouse.png',
+    image: '/images/services/warehouse.webp',
+    width: 560,
+    height: 341,
     paragraphs: [
       'Our transit warehouse is near the International Air Cargo Complex and Ocean Ports.',
       'We offer storage for all cargo types, including temperature-controlled (15–25°C, 2–8°C), DGR, and general cargo zones.',
       'We provide specialized packaging, palletizing, and shrink wrapping.',
-      'Our reefer and general trucks ensure smooth nationwide transportation.'
+      'Our reefer and general trucks ensure smooth nationwide transportation.',
     ],
     tags: ['Specialized', 'Accessible', 'Versatile', 'Nationwide'],
   },
@@ -145,8 +163,7 @@ export const indiaOffices = [
   },
   {
     city: 'Bengaluru',
-    address:
-      '205, 2nd floor, Connection point H.A.L Airport Exit Road, Bangalore 560 017',
+    address: '205, 2nd floor, Connection point H.A.L Airport Exit Road, Bangalore 560 017',
     phone: '+91 80-4112-5590',
   },
   {

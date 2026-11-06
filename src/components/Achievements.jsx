@@ -12,14 +12,18 @@ function useCountUp(target, active, duration = 1500) {
 
   useEffect(() => {
     if (!active || typeof target !== 'number') return
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     const startTime = performance.now()
+    let frame
+    const animationDuration = reducedMotion ? 0 : duration
     const tick = (now) => {
-      const progress = Math.min((now - startTime) / duration, 1)
+      const progress =
+        animationDuration === 0 ? 1 : Math.min((now - startTime) / animationDuration, 1)
       setCount(Math.floor(progress * target))
-      if (progress < 1) requestAnimationFrame(tick)
+      if (progress < 1) frame = requestAnimationFrame(tick)
     }
-    requestAnimationFrame(tick)
-    return () => {}
+    frame = requestAnimationFrame(tick)
+    return () => cancelAnimationFrame(frame)
   }, [active, target, duration])
 
   return count
@@ -28,10 +32,7 @@ function useCountUp(target, active, duration = 1500) {
 function StatItem({ stat, active }) {
   const count = useCountUp(stat.value, active && stat.countUp)
 
-  const display =
-    typeof stat.value === 'string'
-      ? stat.value
-      : `${count}${stat.suffix || ''}`
+  const display = typeof stat.value === 'string' ? stat.value : `${count}${stat.suffix || ''}`
 
   return (
     <div className="text-center lg:text-left">
@@ -62,31 +63,19 @@ export default function Achievements() {
   }, [])
 
   return (
-    <section ref={sectionRef} className="relative overflow-hidden bg-penta-teal px-5 py-16 lg:px-12 lg:py-20">
+    <section
+      ref={sectionRef}
+      className="relative overflow-hidden bg-penta-teal px-5 py-16 lg:px-12 lg:py-20"
+    >
       <svg
         className="pointer-events-none absolute inset-0 h-full w-full opacity-[0.06]"
         viewBox="0 0 1440 400"
         preserveAspectRatio="none"
         aria-hidden
       >
-         <path
-        d="M0 200 Q360 100 720 200 T1440 200"
-        fill="none"
-        stroke="white"
-        strokeWidth="2"
-      />
-      <path
-        d="M0 260 Q360 160 720 260 T1440 260"
-        fill="none"
-        stroke="white"
-        strokeWidth="1.5"
-      />
-      <path
-        d="M0 320 Q360 220 720 320 T1440 320"
-        fill="none"
-        stroke="white"
-        strokeWidth="1"
-      />
+        <path d="M0 200 Q360 100 720 200 T1440 200" fill="none" stroke="white" strokeWidth="2" />
+        <path d="M0 260 Q360 160 720 260 T1440 260" fill="none" stroke="white" strokeWidth="1.5" />
+        <path d="M0 320 Q360 220 720 320 T1440 320" fill="none" stroke="white" strokeWidth="1" />
       </svg>
 
       <div className="relative z-10 mx-auto grid max-w-7xl gap-12 lg:grid-cols-2 lg:items-center">

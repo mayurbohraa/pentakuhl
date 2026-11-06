@@ -15,9 +15,12 @@ import Footer from './components/Footer'
 function App() {
   return (
     <>
+      <a href="#main-content" className="skip-link">
+        Skip to content
+      </a>
       <StickyLogoStrip />
       <Navbar />
-      <main>
+      <main id="main-content" tabIndex={-1}>
         <Hero />
         <AboutUs />
         <Philosophy />
@@ -28,8 +31,8 @@ function App() {
         <Certifications />
         <Awards />
         <GlobalFootprint />
-        <Footer />
       </main>
+      <Footer />
     </>
   )
 }

@@ -3,8 +3,10 @@
 @theme {
   --font-sans: 'Barlow', ui-sans-serif, system-ui, sans-serif;
   --color-penta-orange: #e8531f;
-  --color-penta-teal: #3d5166;
   --color-penta-kuhl: #5ba3bf;
+  --color-penta-teal: #3d5166;
+  --color-penta-action: #c94515;
+  --color-penta-highlight: #ff9b70;
   --header-height: 60px;
 }
 
@@ -24,29 +26,12 @@
   }
 
   body {
-    @apply m-0 overflow-x-hidden font-sans antialiased text-neutral-900;
+    @apply m-0 font-sans antialiased text-neutral-900;
   }
 
   button {
     font-family: inherit;
   }
-
-  /* ::-webkit-scrollbar {
-    width: 8px;
-  }
-
-  ::-webkit-scrollbar-track {
-    background: #f1f1f1;
-  }
-
-  ::-webkit-scrollbar-thumb {
-    background: #e8531f;
-    border-radius: 4px;
-  }
-
-  ::-webkit-scrollbar-thumb:hover {
-    background: #c94515;
-  } */
 }
 
 @keyframes marquee {
@@ -64,4 +49,57 @@
 
 .animate-marquee:hover {
   animation-play-state: paused;
+}
+
+/* Fixed navigation must not cover anchor targets or keyboard focus. */
+[id] {
+  scroll-margin-top: calc(var(--header-height) + 1.5rem);
+}
+
+:focus-visible {
+  outline: 3px solid #005b7f;
+  outline-offset: 4px;
+}
+
+.skip-link {
+  position: fixed;
+  top: 0.75rem;
+  left: 1rem;
+  z-index: 200;
+  transform: translateY(-200%);
+  border-radius: 0.5rem;
+  background: white;
+  padding: 0.75rem 1rem;
+  color: #171717;
+}
+
+.skip-link:focus {
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .certification-track {
+    width: 100%;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .certification-copy {
+    display: none;
+  }
+}
+
+.bg-penta-teal h2 {
+  color: var(--color-penta-highlight);
 }

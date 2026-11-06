@@ -7,7 +7,10 @@ function CompanyLogo({ review }) {
     return (
       <div className="flex flex-col items-center gap-1">
         <div className="flex items-center gap-2">
-          <span className="text-left text-2xl leading-tight font-semibold text-neutral-800" style={{ color: review.color }}>
+          <span
+            className="text-left text-2xl leading-tight font-semibold text-neutral-800"
+            style={{ color: review.color }}
+          >
             Lufthansa Cargo
           </span>
         </div>

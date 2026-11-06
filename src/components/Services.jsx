@@ -9,6 +9,7 @@ function ServiceCard({ service, index }) {
 
   return (
     <article
+      id={service.id}
       className={`mb-6 flex min-h-0 flex-col overflow-hidden rounded-3xl shadow-sm min-[1025px]:sticky min-[1025px]:mb-10 min-[1025px]:min-h-[480px] min-[1025px]:flex-row min-[1025px]:rounded-[2.5rem] ${
         imageOnLeft ? '' : 'min-[1025px]:flex-row-reverse'
       }`}
@@ -23,6 +24,10 @@ function ServiceCard({ service, index }) {
         <img
           src={service.image}
           alt={service.title}
+          width={service.width}
+          height={service.height}
+          loading="lazy"
+          decoding="async"
           className="h-full w-full object-cover"
         />
         {/* Fade image into card background on the inner edge */}
@@ -43,7 +48,10 @@ function ServiceCard({ service, index }) {
       <div className="flex flex-1 flex-col justify-center p-6 lg:p-10 lg:py-12">
         <h3 className="m-0 text-2xl font-bold text-neutral-900 lg:text-3xl">{service.title}</h3>
         {service.paragraphs.map((p) => (
-          <p key={p.slice(0, 24)} className="mt-3 text-sm leading-relaxed text-neutral-600 lg:text-base">
+          <p
+            key={p.slice(0, 24)}
+            className="mt-3 text-sm leading-relaxed text-neutral-600 lg:text-base"
+          >
             {p}
           </p>
         ))}
@@ -92,7 +100,7 @@ export default function Services() {
         {servicesList.map((service, index) => (
           <ServiceCard key={service.title} service={service} index={index} />
         ))}
-        <div className="h-[40vh]" aria-hidden />
+        <div className="hidden h-24 min-[1025px]:block" aria-hidden />
       </div>
     </section>
   )

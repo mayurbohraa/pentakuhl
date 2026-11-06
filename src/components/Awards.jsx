@@ -29,9 +29,12 @@ export default function Awards() {
           {awards.map((award) => (
             <article
               key={award.company}
-              className="flex flex-col items-center rounded-2xl border border-gray-200 p-5 text-center transition-shadow hover:shadow-md"
+              className="flex flex-col items-center min-w-0 rounded-2xl border border-gray-200 p-5 text-center transition-shadow hover:shadow-md"
             >
-              <p className="m-0 mb-5 text-4xl font-bold" style={{ color: award.color }}>
+              <p
+                className="m-0 mb-5 break-words text-xl font-bold sm:text-2xl xl:text-3xl"
+                style={{ color: award.color }}
+              >
                 {award.company}
               </p>
               {award.lines.map((line) => (

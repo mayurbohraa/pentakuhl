@@ -13,14 +13,7 @@ function OfficeBlock({ city, address, phone }) {
 
 export default function Footer() {
   return (
-    <footer
-      id="footer"
-      className="border-t border-gray-200 bg-white bg-[length:400px] bg-top-right bg-no-repeat"
-      style={{
-        backgroundImage: 'url(/images/footer-bg.png)',
-        backgroundBlendMode: 'soft-light',
-      }}
-    >
+    <footer id="footer" className="border-t border-gray-200 bg-white">
       <div className="mx-auto max-w-7xl px-5 py-14 lg:px-12">
         {/* India offices — 4-column grid, first col = heading */}
         <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-4">
@@ -29,8 +22,8 @@ export default function Footer() {
               Our <span className="text-penta-orange">India</span> Offices
             </h2>
             <p className="mt-3 text-sm leading-relaxed text-neutral-500">
-              Penta Freight delivers seamless logistics across India, with branches in key cities for
-              your convenience.
+              Penta Freight delivers seamless logistics across India, with branches in key cities
+              for your convenience.
             </p>
           </div>
           {indiaOffices.map((office) => (
@@ -38,12 +31,8 @@ export default function Footer() {
           ))}
         </div>
 
-        <br/>
-        <br/>
-        <br/>
-
         {/* USA office */}
-        <div className="grid grid-cols-1 gap-10 lg:grid-cols-4">
+        <div className="mt-14 grid grid-cols-1 gap-10 lg:grid-cols-4">
           <div>
             <h2 className="m-0 text-2xl font-bold lg:text-[28px]">
               Our <span className="text-penta-orange">USA</span> Office
@@ -66,9 +55,9 @@ export default function Footer() {
           <p className="m-0">© 2026 Penta Freight. All Rights Reserved</p>
 
           <a
-            href="https://linkedin.com"
-            target="_blank"
-            rel="noreferrer"
+            href="#"
+            data-inactive
+            onClick={(event) => event.preventDefault()}
             className="flex h-10 w-10 items-center justify-center rounded-full border border-neutral-300 text-neutral-700 no-underline transition-colors hover:border-[#0077b5] hover:bg-[#0077b5] hover:text-white"
             aria-label="LinkedIn"
           >
@@ -76,11 +65,21 @@ export default function Footer() {
           </a>
 
           <p className="m-0 flex items-center gap-2">
-            <a href="#privacy" className="text-neutral-600 no-underline hover:text-penta-orange">
+            <a
+              href="#"
+              data-inactive
+              onClick={(event) => event.preventDefault()}
+              className="text-neutral-600 no-underline hover:text-penta-orange"
+            >
               Privacy Policy
             </a>
             <span className="text-penta-orange">•</span>
-            <a href="#terms" className="text-neutral-600 no-underline hover:text-penta-orange">
+            <a
+              href="#"
+              data-inactive
+              onClick={(event) => event.preventDefault()}
+              className="text-neutral-600 no-underline hover:text-penta-orange"
+            >
               Terms and Conditions
             </a>
           </p>

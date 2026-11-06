@@ -18,7 +18,15 @@ export default function WhyChooseUs() {
             key={item.title}
             className={`py-6 lg:px-8 lg:py-0 ${index > 0 ? 'border-t border-gray-200 lg:border-t-0 lg:border-l' : ''}`}
           >
-            <img src={item.icon} alt="" className="mb-5 h-14 w-14 object-contain" />
+            <img
+              width="128"
+              height="128"
+              loading="lazy"
+              decoding="async"
+              src={item.icon}
+              alt=""
+              className="mb-5 h-14 w-14 object-contain"
+            />
             <h3 className="m-0 text-lg font-bold text-neutral-900">{item.title}</h3>
             <p className="mt-2 text-sm leading-relaxed text-neutral-500">{item.description}</p>
           </div>
