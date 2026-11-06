@@ -1,5 +1,3 @@
-import { useState } from 'react'
-
 const certifications = [
   { name: 'IATA', image: '/images/certifications/iata.png' },
   { name: 'ISO 9001:2015', image: '/images/certifications/iso.png' },
@@ -29,7 +27,6 @@ function MarqueeTrack({ duplicate = false }) {
 }
 
 export default function Certifications() {
-  const [paused, setPaused] = useState(false)
   return (
     <section
       aria-labelledby="certifications-heading"
@@ -45,20 +42,9 @@ export default function Certifications() {
         <p className="mt-4 text-base text-white/80">
           Certified excellence, ensuring compliance, quality, and global logistics reliability.
         </p>
-        <button
-          type="button"
-          aria-pressed={paused}
-          onClick={() => setPaused((value) => !value)}
-          className="mt-3 min-h-11 rounded-lg border border-white/60 px-4 py-2 text-sm text-white motion-reduce:hidden"
-        >
-          {paused ? 'Resume animation' : 'Pause animation'}
-        </button>
       </div>
-      <div className="relative mt-10 w-full overflow-hidden">
-        <div
-          className="certification-track flex w-max animate-marquee"
-          style={{ animationPlayState: paused ? 'paused' : undefined }}
-        >
+      <div className="relative mt-12 w-full overflow-hidden">
+        <div className="certification-track flex w-max animate-marquee">
           <MarqueeTrack />
           <MarqueeTrack duplicate />
         </div>

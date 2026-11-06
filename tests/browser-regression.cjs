@@ -229,19 +229,15 @@ const mime = {
     }
 
     await page.emulateMedia({ reducedMotion: 'no-preference' })
-    await page.getByRole('button', { name: 'Pause animation', exact: true }).click()
     assert.equal(
-      await page
-        .locator('.certification-track')
-        .evaluate((el) => getComputedStyle(el).animationPlayState),
-      'paused',
+      await page.locator('section[aria-labelledby="certifications-heading"] button').count(),
+      0,
     )
-    await page.getByRole('button', { name: 'Resume animation', exact: true }).click()
     assert.equal(
       await page
         .locator('.certification-track')
-        .evaluate((el) => getComputedStyle(el).animationPlayState),
-      'running',
+        .evaluate((el) => getComputedStyle(el).animationName),
+      'marquee',
     )
     const playback = await page.locator('video').evaluate(async (video) => {
       try {
@@ -275,7 +271,7 @@ const mime = {
         {
           videoPlayback: playback,
           mediaFailureFallback: 'passed',
-          animationControls: 'passed',
+          certificationStrip: 'passed',
           layouts,
           restoredInactiveControls: 'passed',
           mobileLogo: 'passed',
@@ -298,7 +294,7 @@ const mime = {
         {
           videoPlayback: playback,
           mediaFailureFallback: 'passed',
-          animationControls: 'passed',
+          certificationStrip: 'passed',
           layouts,
           restoredInactiveControls: 'passed',
           mobileLogo: 'passed',
